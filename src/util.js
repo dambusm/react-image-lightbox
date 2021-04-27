@@ -29,7 +29,10 @@ export function getWindowHeight() {
 export function getHighestSafeWindowContext(self = global.window.self) {
   function isCrossOriginFrame() {
     try {
-      return !window.top.location.hostname;
+      return (
+        typeof global.window !== 'undefined' &&
+        !global.window.top.location.hostname
+      );
     } catch (e) {
       return true;
     }
