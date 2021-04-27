@@ -31,12 +31,16 @@ export function getHighestSafeWindowContext(self = global.window.self) {
     try {
       return (
         typeof global.window !== 'undefined' &&
-        !global.window.top.location.hostname
+        typeof global.document !== 'undefined' &&
+        global.document.location.hostname !==
+          global.window.parent.location.hostname
       );
     } catch (e) {
       return true;
     }
   }
 
-  return isCrossOriginFrame() ? self : getHighestSafeWindowContext(self.parent);
+  return self === global.window.top || isCrossOriginFrame()
+    ? self
+    : getHighestSafeWindowContext(self.parent);
 }
