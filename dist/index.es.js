@@ -268,13 +268,20 @@ function getHighestSafeWindowContext() {
 
   function isCrossOriginFrame() {
     try {
-      return !window.top.location.hostname;
+      return (
+        typeof global.window !== 'undefined' &&
+        typeof global.document !== 'undefined' &&
+        global.document.location.hostname !==
+          global.window.parent.location.hostname
+      );
     } catch (e) {
       return true;
     }
   }
 
-  return isCrossOriginFrame() ? self : getHighestSafeWindowContext(self.parent);
+  return self === global.window.top || isCrossOriginFrame()
+    ? self
+    : getHighestSafeWindowContext(self.parent);
 }
 
 // Min image zoom level
